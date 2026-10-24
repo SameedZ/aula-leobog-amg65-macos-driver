@@ -17,3 +17,6 @@ __pycache__/
 # Locally supplied official installer and extracted third-party assets
 local/official-driver/**
 !local/official-driver/README.md
+
+promo-video/**
+screenshots

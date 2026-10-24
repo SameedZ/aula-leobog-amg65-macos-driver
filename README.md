@@ -40,6 +40,10 @@ Requires **macOS 14 or later**. Use USB for all features; the 2.4 GHz receiver s
 
 > **If macOS blocks the app:** An app that is not signed and notarized may show a warning that Apple cannot verify it. The release page should state its signing status before you install it.
 
+<p align="center">
+  <img src="assets/preview/amg65-demo.gif" alt="LEOBOG AMG65 for macOS demo" width="720">
+</p>
+
 ## Features
 
 | Feature | What you can do | Connection |
