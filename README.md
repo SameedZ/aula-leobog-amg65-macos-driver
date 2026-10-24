@@ -19,7 +19,7 @@ A native macOS control app for the LEOBOG AMG65 keyboard. AULA/LEOBOG does not p
 **For macOS 14 or later.** When a public release is available, download **`AMG65-macOS.dmg`** from the latest release:
 
 <!-- AMG65_DOWNLOAD_LINK_START -->
-> **The public download is not available yet.** A release needs to be published before the download button can be activated. Check back here for the one-click DMG download.
+[![Download AMG65 for macOS](https://img.shields.io/badge/Download-macOS%20DMG-007AFF?style=for-the-badge&logo=apple&logoColor=white)](<https://github.com/SameedZ/aula-leobog-amg65-macos-driver/releases/latest/download/AMG65-macOS.dmg>)
 <!-- AMG65_DOWNLOAD_LINK_END -->
 
 The release will include the DMG and a SHA-256 checksum file. The DMG is a drag-to-install image: open it and drag **LEOBOG AMG65** into **Applications**. No separate driver or Homebrew installation is needed to use a published app.
