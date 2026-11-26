@@ -41,12 +41,13 @@ The artwork belongs to AULA/LEOBOG, so keep the built app for personal use.
   the app are confirmed on the keyboard (2026-10-22); media and mouse actions are decoded but
   untested. Fn and the volume knob can't be remapped. "Reset all" + Apply puts
   every key back to default.
-- **Settings** (USB cable only): screen brightness 1–7 works (confirmed from the
-  app's Settings tab, 2026-10-22). Light
-  sleep time, Fn hold/toggle and Game Mode (block Alt+Tab, Alt+F4, ⌘/Win) are
-  sent too, but showed no effect on the cable/macOS in testing — the page says so.
+- **Settings:** screen brightness 1–7 works over the USB cable (confirmed 2026-10-22).
+  Light sleep time works over the dongle (cmd 07): 1 minute → lights off when idle on
+  battery (confirmed 2026-11-26, v0.2.0). On the cable the keyboard never sleeps, so the
+  wired sleep field shows no effect. Fn hold/toggle and Game Mode (block Alt+Tab, Alt+F4,
+  ⌘/Win) are sent too but showed no effect on macOS — the page says so.
 - **2.4 GHz dongle:** Lighting, Custom Light and Custom Key work over the dongle too
-  (all three confirmed from the app over the dongle, 2026-10-22). Screen, LED Strip and Settings still need the USB cable. If the keyboard
+  (all three confirmed from the app over the dongle, 2026-10-22). Settings (except screen brightness) work over it too. Screen and LED Strip still need the USB cable. If the keyboard
   is asleep on battery the app says so — press a key and Apply again.
 - Other tabs are shown but disabled until their protocols are decoded.
 

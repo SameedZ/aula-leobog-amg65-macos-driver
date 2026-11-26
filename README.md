@@ -3,6 +3,7 @@
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-111111?logo=apple&logoColor=white)
 ![Swift 5.9+](https://img.shields.io/badge/Swift-5.9%2B-orange?logo=swift&logoColor=white)
 ![Unofficial](https://img.shields.io/badge/Project-unofficial-blue)
+![Version](https://img.shields.io/github/v/release/SameedZ/aula-leobog-amg65-macos-driver?label=version)
 
 A native macOS control app for the LEOBOG AMG65 keyboard. AULA/LEOBOG does not provide an official macOS companion app for this keyboard, so this community project communicates directly with the keyboard over USB HID without installing a kernel driver.
 
@@ -16,13 +17,15 @@ A native macOS control app for the LEOBOG AMG65 keyboard. AULA/LEOBOG does not p
 
 ## Download
 
-**For macOS 14 or later.** When a public release is available, download **`AMG65-macOS.dmg`** from the latest release:
+**For macOS 14 or later.** Download **`AMG65-macOS.dmg`** from the [latest release](https://github.com/SameedZ/aula-leobog-amg65-macos-driver/releases/latest) (currently **v0.2.0**):
 
 <!-- AMG65_DOWNLOAD_LINK_START -->
 [![Download AMG65 for macOS](https://img.shields.io/badge/Download-macOS%20DMG-007AFF?style=for-the-badge&logo=apple&logoColor=white)](<https://github.com/SameedZ/aula-leobog-amg65-macos-driver/releases/latest/download/AMG65-macOS.dmg>)
 <!-- AMG65_DOWNLOAD_LINK_END -->
 
-The release will include the DMG and a SHA-256 checksum file. The DMG is a drag-to-install image: open it and drag **LEOBOG AMG65** into **Applications**. No separate driver or Homebrew installation is needed to use a published app.
+Each release includes the DMG and a SHA-256 checksum file. See [RELEASE_NOTES.md](RELEASE_NOTES.md) for what changed in each version. The DMG is a drag-to-install image: open it and drag **LEOBOG AMG65** into **Applications**. No separate driver or Homebrew installation is needed to use a published app.
+
+> **New in v0.2.0:** smart sleep works. Set **Light Sleep Time** over the 2.4 GHz receiver and the keyboard turns its lights off when idle on battery.
 
 > **Building from source?** The locally generated package is `MacApp/dist/AMG65-macOS.dmg`; source-build instructions are below.
 
@@ -36,9 +39,11 @@ The release will include the DMG and a SHA-256 checksum file. The DMG is a drag-
 2. Drag **LEOBOG AMG65** to **Applications**.
 3. Eject the mounted disk image, then open the app from **Applications** and connect the keyboard.
 
-Requires **macOS 14 or later**. Use USB for all features; the 2.4 GHz receiver supports Lighting, Custom Light, and Custom Key.
+**Updating:** quit the app, then drag the new version into **Applications** and choose **Replace**. The version is shown next to the app title.
 
-> **If macOS blocks the app:** An app that is not signed and notarized may show a warning that Apple cannot verify it. The release page should state its signing status before you install it.
+Requires **macOS 14 or later**. Use USB for all features; the 2.4 GHz receiver supports Lighting, Custom Light, Custom Key, and the sleep/Fn settings.
+
+> **If macOS blocks the app:** Releases are ad-hoc signed and not notarized, so macOS may warn that it cannot verify the app.
 
 <p align="center">
   <img src="assets/preview/amg65-demo.gif" alt="LEOBOG AMG65 for macOS demo" width="720">
@@ -53,7 +58,8 @@ Requires **macOS 14 or later**. Use USB for all features; the 2.4 GHz receiver s
 | **Custom Key** | Remap keys to keyboard keys and shortcuts. Media/mouse remaps are unverified; Fn and the volume knob cannot be remapped. | USB or 2.4 GHz |
 | **LCD screen** | Upload GIF, PNG, or JPEG to the 240 × 135 display (up to 130 frames). Long GIFs may take several minutes. | USB |
 | **LED Strip** | Upload text, images, or GIFs to the 63 × 5 strip (up to 260 frames); stream clock, CPU, or microphone spectrum while the app is open. | USB |
-| **Settings** | Adjust screen brightness. Other settings are exposed but not confirmed to work on macOS. | USB |
+| **Smart sleep** | Turn the lights off after 1, 5, or 30 minutes idle on battery. Applies over the receiver; the keyboard must be awake when you press Apply. | 2.4 GHz |
+| **Settings** | Adjust screen brightness (USB). Fn toggle and Game Mode are exposed but not confirmed to work on macOS. | USB or 2.4 GHz |
 
 For hardware test details, see [MacApp/README.md](MacApp/README.md). Protocol research is in [docs/protocol/PROTOCOL.md](docs/protocol/PROTOCOL.md).
 
@@ -62,7 +68,7 @@ For hardware test details, see [MacApp/README.md](MacApp/README.md). Protocol re
 ### Requirements
 
 - macOS 14 or later
-- Xcode Command Line Tools with Swift 5.9 or later
+- Xcode (full app, not only the Command Line Tools — SwiftUI macros need it), with Swift 5.9 or later
 - Homebrew and `libusb`
 - The official Windows driver installer, unpacked under `local/official-driver/extracted/app`
 
@@ -74,6 +80,8 @@ cd MacApp
 ./build_app.sh
 open build/AMG65.app
 ```
+
+The version lives in `MacApp/VERSION`. The build number is the git commit count, and the commit hash is shown when you hover the version in the app.
 
 The build script expects the extracted installer files in `../local/official-driver/extracted/app` relative to `MacApp` and Homebrew's default Apple Silicon paths under `/opt/homebrew`. Place the installer and its extracted files there locally; they are excluded from version control. See [MacApp/README.md](MacApp/README.md) for developer helpers and a source file map.
 
@@ -95,7 +103,8 @@ Create the notarytool keychain profile separately with Apple's `xcrun notarytool
 ## Connection notes
 
 - Connect the keyboard with a USB data cable and select the wired connection where applicable.
-- The 2.4 GHz receiver supports Lighting, Custom Light, and Custom Key. Connect the keyboard by cable for LCD, LED Strip, and Settings.
+- The 2.4 GHz receiver supports Lighting, Custom Light, Custom Key, and sleep/Fn settings. Connect the keyboard by cable for LCD, LED Strip, and screen brightness.
+- Light sleep only takes effect on battery. On the cable the keyboard is powered and stays awake.
 - If the keyboard is asleep on battery, press a key and try applying the setting again.
 - Do not use the Windows firmware updater on macOS. Firmware updating is outside this project's scope.
 
