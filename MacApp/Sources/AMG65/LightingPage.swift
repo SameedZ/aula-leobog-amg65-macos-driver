@@ -185,9 +185,12 @@ struct KeyboardPreview: View {
     private func tinted(_ base: some View) -> some View {
         if settings.colorful {
             base.overlay(
-                LinearGradient(colors: [.red, .orange, .yellow, .green, .cyan, .blue, .purple, .pink],
-                               startPoint: .leading, endPoint: .trailing)
-                    .blendMode(.multiply)
+                // ZStack keeps this on View.blendMode (newer SDKs also give ShapeStyle one).
+                ZStack {
+                    LinearGradient(colors: [.red, .orange, .yellow, .green, .cyan, .blue, .purple, .pink],
+                                   startPoint: .leading, endPoint: .trailing)
+                }
+                .blendMode(.multiply)
             )
             .mask(base)
         } else {

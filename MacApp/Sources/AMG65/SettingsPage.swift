@@ -43,7 +43,7 @@ struct SettingsPage: View {
             }
             Spacer(minLength: 0)
             HStack(spacing: 14) {
-                SpriteButton(sprite: "btn_apply.png", enabled: hid.connection == .wired && !model.applying,
+                SpriteButton(sprite: "btn_apply.png", enabled: hid.connection != .none && !model.applying,
                              action: { model.apply(using: hid) }) {
                     Text(model.applying ? "Applying…" : "Apply").font(.openSans(13, .semibold))
                 }
@@ -59,7 +59,7 @@ struct SettingsPage: View {
                 SkinRadio(title: name, checked: model.settings.sleep == v) { model.settings.sleep = v }
                     .frame(width: 200)
             }
-            UntestedNote(text: "No effect seen on the USB cable — likely only applies on battery.")
+            UntestedNote(text: "Works on battery — apply it over the 2.4 GHz dongle. Screen brightness needs the cable.")
             SectionTitle(text: "Fn Key").padding(.top, 8)
             SkinRadio(title: "Hold Fn (normal)", checked: !model.settings.fnToggle) { model.settings.fnToggle = false }
                 .frame(width: 200)
@@ -103,11 +103,11 @@ struct SettingsStatus: View {
 
     var body: some View {
         Group {
-            if hid.connection != .wired {
-                Text("Needs the USB cable").foregroundStyle(.orange)
+            if hid.connection == .none {
+                Text("Connect the keyboard").foregroundStyle(.orange)
             } else if let r = model.lastResult, !model.hasUnappliedChanges || !r.ok {
                 Button { details.toggle() } label: {
-                    Text(r.ok ? "✓ Applied" : "✗ Failed · details").foregroundStyle(r.ok ? Color.green : Color.red)
+                    Text(r.ok ? "✓ Applied" : (hid.connection == .dongle ? "✗ Keyboard asleep? Press a key, then Apply" : "✗ Failed · details")).foregroundStyle(r.ok ? Color.green : Color.red)
                 }
                 .buttonStyle(.plain)
                 .popover(isPresented: $details) {

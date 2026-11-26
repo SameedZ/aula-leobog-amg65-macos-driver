@@ -322,7 +322,7 @@ struct HomePage: View {
                 .opacity(hid.connection == .none ? 0.4 : 1)
             Text("LEOBOG AMG65").font(.openSans(26, .semibold)).foregroundStyle(Palette.text)
             Text(hid.connection == .wired ? "Ready — connected by USB cable."
-                 : hid.connection == .dongle ? "Ready over the 2.4 GHz dongle. Screen, LED Strip and Settings need the USB cable."
+                 : hid.connection == .dongle ? "Ready over the 2.4 GHz dongle. Screen and LED Strip need the USB cable."
                  : "Connect the keyboard with the USB cable or the 2.4 GHz dongle.")
                 .font(.openSans(14)).foregroundStyle(Palette.dim)
             SpriteButton(sprite: "btn_apply.png", action: { tab = .lighting }) {

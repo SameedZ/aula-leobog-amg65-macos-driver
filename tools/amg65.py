@@ -331,6 +331,9 @@ def main():
     dl.add_argument("--brightness", type=byte(0, 5), default=5)
     dl.add_argument("--speed", type=byte(0, 5), default=3)
     dl.add_argument("--colortype", type=byte(0, 1), default=0)
+    ds = sub.add_parser("dongle-settings", help="send sleep / Fn settings through the 2.4 GHz dongle (cmd 07)")
+    ds.add_argument("--sleep", type=byte(0, 3), default=1, help="0 never, 1 = 1 min, 2 = 5 min, 3 = 30 min")
+    ds.add_argument("--fn-toggle", action="store_true")
     dc = sub.add_parser("dongle-customlight", help="per-key colours through the 2.4 GHz dongle")
     dc.add_argument("--all", nargs=3, type=byte(0, 255), metavar=("R", "G", "B"))
     dc.add_argument("--key", action="append", default=[], metavar="NAME=R,G,B")
@@ -404,6 +407,23 @@ def main():
                 time.sleep(0.002)
             print("Result:", f"{sum(results)}/{len(results)} echoed OK")
             return 0 if all(results) else 2
+        finally:
+            dev.close()
+
+    if args.cmd == "dongle-settings":
+        # 0x4456e0: payload [0, 1, AltTab, AltF4, Win, fn_switch, sleep_light, 0, key_respondtime, …, AA 55]
+        try:
+            dev = open_channel([DONGLE_CMD_PAGE])
+        except OSError as e:
+            print(f"Could not open the dongle: {e}"); return 1
+        if not dev:
+            print("Dongle not found."); return 1
+        try:
+            drain(dev)
+            f = [0, 1, 0, 0, 0, int(args.fn_toggle), args.sleep, 0, 0, 0, 0, 0, 0, 0, 0xAA, 0x55]
+            ok = dongle_send(dev, dongle_packet(0x07, f), f"dongle settings (sleep {args.sleep})")
+            print("Result:", "OK" if ok else "FAILED")
+            return 0 if ok else 2
         finally:
             dev.close()
 

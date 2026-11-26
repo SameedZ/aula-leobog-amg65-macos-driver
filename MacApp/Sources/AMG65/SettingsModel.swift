@@ -4,7 +4,7 @@ import Foundation
 struct KeyboardSettings: Codable, Equatable {
     /// Dot-matrix screen brightness — confirmed (1 dim … 7 = app default).
     var screenBrightness: UInt8 = 7
-    /// 0 never, 1 = 1 min, 2 = 5 min, 3 = 30 min (from the app). No effect seen on the cable.
+    /// 0 never, 1 = 1 min, 2 = 5 min, 3 = 30 min. Confirmed over the dongle on battery (1 min → lights off).
     var sleep: UInt8 = 0
     /// Fn as a toggle instead of hold. No effect seen on the cable.
     var fnToggle = false
@@ -35,7 +35,7 @@ final class SettingsModel: ObservableObject {
         guard !applying else { return }
         applying = true
         let sent = settings
-        hid.send(AMG65Protocol.settings(sent)) { [weak self] result in
+        let finish: (TransactionResult) -> Void = { [weak self] result in
             guard let self else { return }
             self.applying = false
             self.lastResult = result
@@ -43,6 +43,12 @@ final class SettingsModel: ObservableObject {
                 self.applied = sent
                 self.save(Self.appliedKey, sent)
             }
+        }
+        if hid.connection == .dongle {
+            // Dongle cmd 07 carries sleep / Fn / blocks, but no screen brightness.
+            hid.sendDongle(DongleProtocol.settings(sent), label: "settings", completion: finish)
+        } else {
+            hid.send(AMG65Protocol.settings(sent), completion: finish)
         }
     }
 

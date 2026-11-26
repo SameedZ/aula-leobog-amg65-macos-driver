@@ -215,6 +215,20 @@ enum DongleProtocol {
         return [mode] + chunks(0x14, table)
     }
 
+    /// Settings (cmd 07), from 0x4456e0: 07 10 00 + [0, 1, Alt+Tab, Alt+F4, Win, Fn toggle,
+    /// sleep, 0, key response time, …, AA 55]. The blocks aren't gated by Game Mode here
+    /// (the Windows app sends the checkboxes as they are); we keep the wired gating.
+    /// There is no screen-brightness field. Key response time: Windows default 0.
+    static func settings(_ s: KeyboardSettings) -> [[UInt8]] {
+        let game: UInt8 = s.gameMode ? 1 : 0
+        return [packet(0x07, length: 0x10, index: 0, [
+            0x00, 0x01,
+            game & (s.blockAltTab ? 1 : 0), game & (s.blockAltF4 ? 1 : 0), game & (s.blockWindowsKey ? 1 : 0),
+            s.fnToggle ? 1 : 0, s.sleep, 0x00, 0x00,
+            0, 0, 0, 0, 0, 0xAA, 0x55,
+        ])]
+    }
+
     /// Key map (cmd 0x10): the same 512-byte table as the cable, in 19 chunks. Decoded; echo-tested.
     static func keymap(_ slots: [Int: [UInt8]]) -> [[UInt8]] {
         var table = [UInt8](repeating: 0, count: 512)

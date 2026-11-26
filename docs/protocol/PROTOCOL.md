@@ -299,7 +299,7 @@ Hardware tests 2026-10-22 (USB cable, macOS) — every packet acknowledged, chec
 | [7] screen brightness | 7 → 1 → 7 | ✅ **screen dimmed, then restored** (user-confirmed) |
 | [1]+[4] Game Mode + block Win | ⌘ Space | ✗ still opened Spotlight |
 | [1]+[2..4] all blocks (+ `04 F0` too) | ⌘ Space | ✗ no effect |
-| [6] sleep = 1 (1 min) | idle 90 s | ✗ backlight stayed on — probably battery-only |
+| [6] sleep = 1 (1 min) | idle 90 s | ✗ backlight stayed on over the cable — sleep only applies on battery; set it over the dongle (cmd 07, §8, confirmed) |
 | [5] Fn toggle | tap Fn, press 1 | ✗ still typed "1" |
 
 The keyboard clearly processes 0x17 (brightness works); the other fields may only
@@ -437,7 +437,7 @@ whose first 3 bytes echo the packet; that echo is the acknowledgement. No 04 18 
 | `05` | `0x43b560` | Lighting: `05 10 00` + the wired lighting data (mode, R, G, B, 0×4, colortype, brightness, speed, direction, 0, 0, AA, 55) | **Confirmed** (static red / green) |
 | `05` + `14` | `0x435f40` | Custom colours: `05 10 00 80 …` (mode 0x80, brightness at payload [9]), then a 576-byte table (slot n = [n, R, G, B], AA 55 at 574) as 20 × 28 + 1 × 16 byte chunks of cmd `14` | **Confirmed** (blue / red Esc / green WASD) |
 | `10` | `0x41b8e0` → slots `0x41b4f0` | Key map: the same 512-byte slot table as wired `0x11`, as 18 × 28 + 1 × 8 byte chunks | **Confirmed** (remap from the app works over the dongle) |
-| `07` | `0x4456e0` | Settings: `07 10 00 00 01` + blocks Alt+Tab, Alt+F4, Win, fn_switch, sleep, —, key_respondtime, … AA 55 at [17..18]. **No screen-brightness field.** | Decoded, untested |
+| `07` | `0x4456e0` | Settings: `07 10 00` + payload `[0]=00 [1]=01 [2]=block Alt+Tab [3]=Alt+F4 [4]=Win [5]=fn_switch [6]=sleep_light [7]=00 [8]=key_respondtime … [14]=AA [15]=55`. Windows defaults: sleep 0, key_respondtime 0. **No screen-brightness field.** In the app. | **Confirmed** 2026-11-26: sleep = 1 → lights off after ~1 min idle on battery |
 | `0C` | `0x42ac40` | Time sync (has the `5A` marker like wired 0x28) | Not decoded |
 | `09`, `0B` | `0x43e0d0`, `0x444180` | Chunked uploads (likely macros / another table) | Not decoded |
 | `20` | `0x448170` | Probably a status query | Not decoded |
