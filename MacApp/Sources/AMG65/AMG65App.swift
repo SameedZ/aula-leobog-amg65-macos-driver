@@ -280,10 +280,18 @@ struct TabButton: View {
 struct TopBar: View {
     @EnvironmentObject var hid: KeyboardHID
 
+    /// "v0.2.0" from the bundle (set by build_app.sh from MacApp/VERSION); "dev" when run unbundled.
+    static var versionLabel: String {
+        (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String).map { "v\($0)" } ?? "dev"
+    }
+
     var body: some View {
         HStack {
             Image(nsImage: Skin.image("logo/logo.png"))
             Text("AMG65").font(.openSans(18, .light)).foregroundStyle(Palette.text).padding(.leading, 6)
+            Text(Self.versionLabel).font(.openSans(11)).foregroundStyle(Palette.dim).padding(.leading, 4)
+                .help("Build \(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?") · "
+                      + "\(Bundle.main.object(forInfoDictionaryKey: "AMG65GitCommit") as? String ?? "dev")")
             Spacer()
             ConnectionPill(connection: hid.connection)
         }

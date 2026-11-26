@@ -10,6 +10,13 @@ APP="build/AMG65.app"
 
 [ -d "$SRC_ART/skins/theme1" ] || { echo "Missing $SRC_ART — unpack the driver installer first."; exit 1; }
 
+# Version: MacApp/VERSION is the single source (semver, bump it per release).
+# Build number = commit count, so every committed build is distinguishable.
+VERSION="$(tr -d '[:space:]' < VERSION)"
+BUILD="$(git rev-list --count HEAD 2>/dev/null || echo 1)"
+COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+git diff --quiet HEAD -- . 2>/dev/null || COMMIT="$COMMIT-dirty"
+
 swift build -c release
 BIN="$(swift build -c release --show-bin-path)/AMG65"
 
@@ -33,7 +40,7 @@ if command -v sips >/dev/null; then
   sips -s format icns "$SRC_ART/skins/theme1/DeviceDriver.ico" --out "$APP/Contents/Resources/AppIcon.icns" >/dev/null 2>&1 || true
 fi
 
-cat > "$APP/Contents/Info.plist" <<'PLIST'
+cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -43,8 +50,9 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>CFBundleIdentifier</key><string>local.amg65.driver</string>
   <key>CFBundleExecutable</key><string>AMG65</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>0.1</string>
-  <key>CFBundleVersion</key><string>1</string>
+  <key>CFBundleShortVersionString</key><string>${VERSION}</string>
+  <key>CFBundleVersion</key><string>${BUILD}</string>
+  <key>AMG65GitCommit</key><string>${COMMIT}</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>NSHighResolutionCapable</key><true/>
@@ -55,4 +63,4 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 PLIST
 
 codesign --force --deep -s - "$APP" >/dev/null
-echo "Built $(pwd)/$APP"
+echo "Built $(pwd)/$APP — v${VERSION} (build ${BUILD}, ${COMMIT})"

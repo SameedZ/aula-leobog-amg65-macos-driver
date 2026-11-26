@@ -9,6 +9,13 @@ This file tracks user-facing changes to the LEOBOG AMG65 macOS app. Published re
 - Added a DMG packaging script that builds a fresh app, creates a drag-to-Applications disk image, verifies it, and writes a SHA-256 checksum. Developer ID signing and notarization are optional script settings.
 - Added `scripts/configure_download_link.sh` to generate the README's direct latest-release download link from the connected GitHub `origin` remote.
 
+## 0.2.0 — smart sleep over the dongle
+
+- Light Sleep Time now works: Settings applies over the 2.4 GHz dongle, and the keyboard turns its lights off when idle on battery (confirmed with the 1-minute timer).
+- A failed Apply over the dongle now says the keyboard may be asleep (press a key, then Apply).
+- The app shows its version next to the title; hover it for the build number and commit.
+- Builds with current Xcode (fixed an ambiguous `blendMode` call).
+
 ## 0.1.0 — initial project release (draft)
 
 This is the first community-built macOS control app for the LEOBOG AMG65 keyboard. It communicates directly over USB HID without installing a kernel driver.
